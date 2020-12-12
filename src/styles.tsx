@@ -61,6 +61,49 @@ export const ThumbnailOverlayTextBox = styled.figcaption`
     overflow: hidden;
 `;
 
+export const PhotoContainer = styled.div`
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+`;
+
+export const PhotoBackLink = styled.div`
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 40%;
+`;
+
+export const PhotoForwardLink = styled.div`
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 100%;
+    width: 40%;
+`;
+
+export const Photo = styled.img`
+    max-height: 80vh;
+    max-width: 90vw;
+`;
+
+export const PhotoDescriptionContainer = styled.figcaption`
+    margin-top: 10px;
+    margin-left: 10px;
+`;
+
+export const PhotoTitle = styled.div`
+    font-size: 1.2rem;
+    margin-bottom: 5px;
+`;
+
+export const PhotoDescription = styled.div`
+    margin-bottom: 5px;
+`;
+
 export const ThumbnailSizeSelectContainer = styled.div`
     display: flex;
     flex-direction: row;
