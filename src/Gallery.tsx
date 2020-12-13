@@ -1,10 +1,13 @@
 import React, { useEffect } from 'react';
 import ReactDOM from 'react-dom';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import { loadGalleryModel } from './model/gallery-model';
+import { HashRouter, Route, Switch } from 'react-router-dom';
+import {
+    GalleryProps,
+    loadGalleryModel,
+    photoRoutePattern,
+} from './model/gallery-model';
 import { PhotoView } from './PhotoView';
 import { ThumbnailView } from './ThumbnailView';
-import { GalleryComponentProps } from './ui-types';
 
 export async function renderGallery(rootElementName: string) {
     var element: JSX.Element;
@@ -21,22 +24,22 @@ export async function renderGallery(rootElementName: string) {
     );
 }
 
-function Gallery({ gallery }: GalleryComponentProps) {
+function Gallery({ gallery }: GalleryProps) {
     useEffect(() => {
         document.title = gallery.title;
     });
 
     return (
-        <Router>
+        <HashRouter>
             <Switch>
                 <Route exact path="/">
                     <ThumbnailView gallery={gallery} />
                 </Route>
                 <Route
-                    path="/photo/:filename+"
+                    path={photoRoutePattern()}
                     children={<PhotoView gallery={gallery} />}
                 />
             </Switch>
-        </Router>
+        </HashRouter>
     );
 }

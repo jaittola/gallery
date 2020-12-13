@@ -1,12 +1,12 @@
 import React from 'react';
+import { GalleryProps } from './model/gallery-model';
 import * as S from './styles';
-import { GalleryComponentProps } from './ui-types';
 
-export function Title({ gallery }: GalleryComponentProps) {
+export function Title({ gallery }: GalleryProps) {
     return <S.PageTitleText>{gallery.title}</S.PageTitleText>;
 }
 
-export function Description({ gallery }: GalleryComponentProps) {
+export function Description({ gallery }: GalleryProps) {
     return <S.DescriptionText>{gallery.description}</S.DescriptionText>;
 }
 

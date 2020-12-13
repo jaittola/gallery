@@ -1,11 +1,21 @@
 import React, { useEffect } from 'react';
-import { Link, useParams, useHistory } from 'react-router-dom';
+import { Link, useHistory, useParams } from 'react-router-dom';
 import { Description, IconAttribution, Title } from './Components';
+import {
+    GalleryModel,
+    GalleryProps,
+    Photo,
+    photoFilePath,
+    photoLinkPath,
+} from './model/gallery-model';
 import * as S from './styles';
-import { Photo } from './types/gallery-types';
-import { GalleryComponentProps } from './ui-types';
 
-export function PhotoView({ gallery }: GalleryComponentProps) {
+interface NextAndPrevNavigation {
+    next?: () => void;
+    prev?: () => void;
+}
+
+export function PhotoView({ gallery }: GalleryProps) {
     const history = useHistory();
     const { filename } = useParams<Record<string, string | undefined>>();
 
@@ -14,23 +24,27 @@ export function PhotoView({ gallery }: GalleryComponentProps) {
     );
     const photo = gallery.photos[photoIdx];
 
-    const prevPhotoUrl =
-        photoIdx > 0
-            ? `/photo/${gallery.photos[photoIdx - 1].filename}`
-            : undefined;
-    const nextPhotoUrl =
-        photoIdx <= gallery.photos.length - 2
-            ? `/photo/${gallery.photos[photoIdx + 1].filename}`
-            : undefined;
+    const nextAndPrev = {
+        prev:
+            photoIdx > 0
+                ? () =>
+                      history.push(photoLinkPath(gallery.photos[photoIdx - 1]))
+                : undefined,
+        next:
+            photoIdx <= gallery.photos.length - 2
+                ? () =>
+                      history.push(photoLinkPath(gallery.photos[photoIdx + 1]))
+                : undefined,
+    };
 
     useEffect(() => {
         document.onkeydown = (event) => {
             switch (event.code) {
-                case 'ArrowRight':
-                    if (nextPhotoUrl) history.push(nextPhotoUrl);
-                    break;
                 case 'ArrowLeft':
-                    if (prevPhotoUrl) history.push(prevPhotoUrl);
+                    if (nextAndPrev.prev) nextAndPrev.prev();
+                    break;
+                case 'ArrowRight':
+                    if (nextAndPrev.next) nextAndPrev.next();
                     break;
                 default:
                     break;
@@ -40,9 +54,9 @@ export function PhotoView({ gallery }: GalleryComponentProps) {
 
     const bodyElement = photo ? (
         <SinglePhotoView
+            gallery={gallery}
             photo={photo}
-            nextPhotoUrl={nextPhotoUrl}
-            prevPhotoUrl={prevPhotoUrl}
+            nextAndPrev={nextAndPrev}
         />
     ) : (
         <p>Photo with filename {filename} not found</p>
@@ -61,34 +75,26 @@ export function PhotoView({ gallery }: GalleryComponentProps) {
 }
 
 interface SinglePhotoProps {
+    gallery: GalleryModel;
     photo: Photo;
-    nextPhotoUrl?: string;
-    prevPhotoUrl?: string;
+    nextAndPrev: NextAndPrevNavigation;
 }
 
-function SinglePhotoView(props: SinglePhotoProps) {
-    const history = useHistory();
-
-    const photo = props.photo;
+function SinglePhotoView({ gallery, photo, nextAndPrev }: SinglePhotoProps) {
     const takenDate = photo.taken?.toLocaleDateString();
-
-    function nextPhoto() {
-        if (props.nextPhotoUrl) history.push(props.nextPhotoUrl);
-    }
-
-    function prevPhoto() {
-        if (props.prevPhotoUrl) history.push(props.prevPhotoUrl);
-    }
 
     return (
         <>
             <S.PhotoContainer>
-                {props.prevPhotoUrl ? (
-                    <S.PhotoBackLink onClick={prevPhoto} />
+                {nextAndPrev.prev ? (
+                    <S.PhotoBackLink onClick={nextAndPrev.prev} />
                 ) : undefined}
-                <S.Photo src={`/${props.photo.filename}`} alt={photo.title} />
-                {props.nextPhotoUrl ? (
-                    <S.PhotoForwardLink onClick={nextPhoto} />
+                <S.Photo
+                    src={photoFilePath(gallery, photo)}
+                    alt={photo.title}
+                />
+                {nextAndPrev.next ? (
+                    <S.PhotoForwardLink onClick={nextAndPrev.next} />
                 ) : undefined}
             </S.PhotoContainer>
             <S.PhotoDescriptionContainer>

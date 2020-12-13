@@ -1,11 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import * as S from './styles';
-import { Photo } from './types/gallery-types';
-import { GalleryComponentProps } from './ui-types';
-import { Title, Description, IconAttribution } from './Components';
 import { Link } from 'react-router-dom';
+import { Description, IconAttribution, Title } from './Components';
+import {
+    GalleryModel,
+    GalleryProps,
+    Photo,
+    photoFilePath,
+    photoLinkPath,
+} from './model/gallery-model';
+import * as S from './styles';
 
-export function ThumbnailView({ gallery }: GalleryComponentProps) {
+export function ThumbnailView({ gallery }: GalleryProps) {
     useEffect(() => {
         document.onkeydown = () => {};
     });
@@ -20,7 +25,7 @@ export function ThumbnailView({ gallery }: GalleryComponentProps) {
     );
 }
 
-function ThumbnailArray({ gallery }: GalleryComponentProps) {
+function ThumbnailArray({ gallery }: GalleryProps) {
     const [thumbnailHeight, setThumbnailHeight] = useState(
         getThumbnailSizeFromCookies()
     );
@@ -37,7 +42,7 @@ function ThumbnailArray({ gallery }: GalleryComponentProps) {
             />
             <S.GalleryPhotosContainer>
                 {gallery.photos.map((p, idx) =>
-                    PhotoThumbnail(p, idx, thumbnailHeight)
+                    PhotoThumbnail(gallery, p, idx, thumbnailHeight)
                 )}
             </S.GalleryPhotosContainer>
         </>
@@ -73,13 +78,18 @@ function ThumbnailSizeSelect({
     );
 }
 
-function PhotoThumbnail(p: Photo, index: number, thumbnailHeight: number) {
+function PhotoThumbnail(
+    gallery: GalleryModel,
+    p: Photo,
+    index: number,
+    thumbnailHeight: number
+) {
     const key = `thumbnail_${index}`;
     const element = (
-        <Link to={`/photo/${p.filename}`} key={key}>
+        <Link to={photoLinkPath(p)} key={key}>
             <S.ThumbnailContainer>
                 <S.Thumbnail
-                    src={p.filename}
+                    src={photoFilePath(gallery, p)}
                     alt={p.title}
                     height={thumbnailHeight}
                 />
