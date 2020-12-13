@@ -75,6 +75,7 @@ export const PhotoBackLink = styled.div`
     top: 0;
     height: 100%;
     width: 40%;
+    cursor: pointer;
 `;
 
 export const PhotoForwardLink = styled.div`
@@ -83,6 +84,7 @@ export const PhotoForwardLink = styled.div`
     top: 0;
     height: 100%;
     width: 40%;
+    cursor: pointer;
 `;
 
 export const Photo = styled.img`
