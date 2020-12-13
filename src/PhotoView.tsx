@@ -10,11 +10,6 @@ import {
 } from './model/gallery-model';
 import * as S from './styles';
 
-interface NextAndPrevNavigation {
-    next?: () => void;
-    prev?: () => void;
-}
-
 export function PhotoView({ gallery }: GalleryProps) {
     const history = useHistory();
     const { filename } = useParams<Record<string, string | undefined>>();
@@ -24,18 +19,7 @@ export function PhotoView({ gallery }: GalleryProps) {
     );
     const photo = gallery.photos[photoIdx];
 
-    const nextAndPrev = {
-        prev:
-            photoIdx > 0
-                ? () =>
-                      history.push(photoLinkPath(gallery.photos[photoIdx - 1]))
-                : undefined,
-        next:
-            photoIdx <= gallery.photos.length - 2
-                ? () =>
-                      history.push(photoLinkPath(gallery.photos[photoIdx + 1]))
-                : undefined,
-    };
+    const nextAndPrev = createNextAndPrev(photoIdx);
 
     useEffect(() => {
         document.onkeydown = (event) => {
@@ -68,10 +52,31 @@ export function PhotoView({ gallery }: GalleryProps) {
                 <Title gallery={gallery} />
             </Link>
             <Description gallery={gallery} />
+            <PhotoNavigation nextAndPrev={nextAndPrev} />
             {bodyElement}
             <IconAttribution />
         </div>
     );
+
+    function createNextAndPrev(photoIdx: number): NextAndPrevNavigation {
+        const prevLink =
+            photoIdx > 0
+                ? photoLinkPath(gallery.photos[photoIdx - 1])
+                : undefined;
+        const nextLink =
+            photoIdx <= gallery.photos.length - 2
+                ? photoLinkPath(gallery.photos[photoIdx + 1])
+                : undefined;
+        const prev = prevLink ? () => history.push(prevLink) : undefined;
+        const next = nextLink ? () => history.push(nextLink) : undefined;
+
+        return {
+            prevLink,
+            nextLink,
+            prev,
+            next,
+        };
+    }
 }
 
 interface SinglePhotoProps {
@@ -105,5 +110,35 @@ function SinglePhotoView({ gallery, photo, nextAndPrev }: SinglePhotoProps) {
                 ) : undefined}
             </S.PhotoDescriptionContainer>
         </>
+    );
+}
+
+interface NextAndPrevNavigation {
+    next?: () => void;
+    prev?: () => void;
+
+    nextLink?: string;
+    prevLink?: string;
+}
+
+interface PhotoNavigationProps {
+    nextAndPrev: NextAndPrevNavigation;
+}
+
+function PhotoNavigation({ nextAndPrev }: PhotoNavigationProps) {
+    return (
+        <S.PhotoNavigation>
+            {nextAndPrev.prevLink ? (
+                <S.RRLink to={nextAndPrev.prevLink}>Previous</S.RRLink>
+            ) : (
+                <div>&nbsp;</div>
+            )}
+            <S.RRLink to="/">Up</S.RRLink>
+            {nextAndPrev.nextLink ? (
+                <S.RRLink to={nextAndPrev.nextLink}>Next</S.RRLink>
+            ) : (
+                <div>&nbsp;</div>
+            )}
+        </S.PhotoNavigation>
     );
 }

@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { Link } from 'react-router-dom';
 
 const textColor = '#101010';
 
@@ -122,6 +123,19 @@ export const Select = styled.select`
 
 export const SelectExplanation = styled.div`
     margin-right: 0.4em;
+`;
+
+export const PhotoNavigation = styled.div`
+    display: flex;
+    flex-direction: row;
+    flex-wrap: none;
+    justify-content: space-between;
+    padding-top: 5px;
+    padding-bottom: 8px;
+`;
+
+export const RRLink = styled(Link)`
+    font-size: inherit;
 `;
 
 export const defaultThumbnailHeight = 200;
