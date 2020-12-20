@@ -1,23 +1,14 @@
-export interface GalleryModel {
-    title: string;
-    description: string;
-    photoDir?: string;
-    subgalleries?: string[];
-    photos: Photo[];
-}
+import {
+    GalleryModel,
+    Photo,
+    PartialGalleryModel,
+} from '../../../common/types/gallery-types';
+
+export type { GalleryModel, Photo };
 
 export interface GalleryProps {
     gallery: GalleryModel;
 }
-
-export interface Photo {
-    filename: string;
-    title: string;
-    description: string;
-    taken?: Date;
-}
-
-type PartialGalleryModel = Partial<GalleryModel>;
 
 export async function loadGalleryModel(
     fromFile: string
