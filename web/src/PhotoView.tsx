@@ -13,11 +13,7 @@ import * as S from './styles';
 export function PhotoView({ gallery }: GalleryProps) {
     const history = useHistory();
     const { filename } = useParams<Record<string, string | undefined>>();
-
-    const photoIdx = gallery.photos.findIndex((p) =>
-        filename ? p.filename === filename : false
-    );
-    const photo = gallery.photos[photoIdx];
+    const { photoIdx, photo } = findPhotoFromGallery(gallery, filename);
 
     const nextAndPrev = createNextAndPrev(photoIdx);
 
@@ -77,6 +73,22 @@ export function PhotoView({ gallery }: GalleryProps) {
             next,
         };
     }
+}
+
+interface FindPhotoResult {
+    photoIdx: number;
+    photo: Photo | undefined;
+}
+
+function findPhotoFromGallery(
+    gallery: GalleryModel,
+    filename: string | undefined
+): FindPhotoResult {
+    const photoIdx = gallery.photos.findIndex((p) =>
+        filename ? p.filename === filename : false
+    );
+    const photo = gallery.photos[photoIdx];
+    return { photoIdx, photo };
 }
 
 interface SinglePhotoProps {
