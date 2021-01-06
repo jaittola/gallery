@@ -89,8 +89,9 @@ export const PhotoForwardLink = styled.div`
 `;
 
 export const Photo = styled.img`
-    max-height: 80vh;
-    max-width: 90vw;
+    height: 80vh;
+    width: 90vw;
+    object-fit: contain;
 `;
 
 export const PhotoDescriptionContainer = styled.figcaption`
