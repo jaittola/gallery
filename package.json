@@ -1,6 +1,4 @@
 {
-    "private":true,
-    "workspaces": ["web"],
     "scripts": {
         "web-start": "(cd web && yarn start)",
         "web-test": "(cd web && yarn test)",
